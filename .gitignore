@@ -1,0 +1,48 @@
+# PyCharm
+.idea/
+*.iml
+*.iws
+.idea/*
+*.idea/
+
+# Windows
+Thumbs.db
+Desktop.ini
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual Environments
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Test and coverage files
+*.coveragerc
+.coverage
+nosetests.xml
+coverage.xml
+*.hypothesis/
+*.tox/
+
+# Distribution / Packaging
+build/
+dist/
+*.egg-info/
+*.egg
+
+# Jupyter Notebooks
+.ipynb_checkpoints/
+
+# Mac OS
+.DS_Store
+
+# Directory/Folders
+research_notebooks/
+
+# .env file
+.env
