@@ -64,7 +64,7 @@ class CLIPEmbedding:
         Returns:
             numpy.ndarray:: A 1D array representing the text's embedding, normalized to unit length.
         """
-        text_inputs = self.clip_processor.tokenize(text=[query_text], return_tensors="pt", padding=True).to(self.device)
+        text_inputs = self.clip_processor(text=[query_text], return_tensors="pt", padding=True).to(self.device)
         with torch.no_grad():
             text_features = self.clip_model.get_text_features(**text_inputs)
         text_features = text_features / text_features.norm(dim=-1, keepdim=True)
