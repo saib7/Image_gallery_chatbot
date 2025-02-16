@@ -17,10 +17,9 @@ class ImageMetadata(BaseModel):
 
 
 class ImageAnalyzer:
-    def __init__(self, image_path: str, api_key: str, model_name: str = "gemini-2.0-flash-lite-preview-02-05", delay: int = 2):
+    def __init__(self, api_key: str, model_name: str = "gemini-2.0-flash-lite-preview-02-05", delay: int = 2):
         load_dotenv(dotenv_path="../.env")
         self.api_key = api_key
-        self.image_path = image_path
         self.delay = delay
         self.model = ChatGoogleGenerativeAI(model=model_name, api_key=self.api_key)
         self.parser = PydanticOutputParser(pydantic_object=ImageMetadata)
@@ -38,13 +37,13 @@ class ImageAnalyzer:
             ])
         ])
 
-    def _encode_image(self) -> str:
-        with open(self.image_path, "rb") as image_file:
+    def _encode_image(self, image_path: str) -> str:
+        with open(image_path, "rb") as image_file:
             image_data = base64.b64encode(image_file.read()).decode("utf-8")
         return image_data
 
-    def analyze_image(self, language: str = "English") -> dict:
-        image_data = self._encode_image()
+    def analyze_image(self, image_path: str, language: str = "English") -> str:
+        image_data = self._encode_image(image_path)
 
         chain = self.prompt | self.model | self.parser
 
@@ -55,5 +54,5 @@ class ImageAnalyzer:
             "image_data": image_data
         })
 
-        return result.model_dump_json(indent=2)
+        return result.model_dump()
 

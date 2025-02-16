@@ -5,6 +5,8 @@ from vectordb import ChromaDatabase
 db = ChromaDatabase(collection_name="image_embeddings2", persist_directory="./db")
 
 db.store_images_in_chroma("../gallery/images")
+# db.get_sample_data()
+
 # db.reset_collection()
 # # Example of querying with text
 # print(db.query_with_text(query_text="A Girl"))

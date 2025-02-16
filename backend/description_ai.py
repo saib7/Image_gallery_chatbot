@@ -11,17 +11,16 @@ api_key = os.getenv("GEMINI_API_KEY")
 
 
 class GeminiImageDescription:
-    def __init__(self, image_path: str, model_name="gemini-2.0-flash-lite-preview-02-05", delay=2):
-        self.image_path = image_path
+    def __init__(self, model_name="gemini-2.0-flash-lite-preview-02-05", delay=2):
         self.model_name = model_name
         self.model = ChatGoogleGenerativeAI(model=self.model_name, api_key=api_key)
         self.delay = delay
 
 
-    def load_image(self):
+    def load_image(self, image_path: str):
         """Reads and encodes the image from the local path."""
         try:
-            with open(self.image_path, "rb") as image_file:
+            with open(image_path, "rb") as image_file:
                 image_data = base64.b64encode(image_file.read()).decode("utf-8")
             return image_data
         except Exception as e:
@@ -63,9 +62,9 @@ class GeminiImageDescription:
         time.sleep(self.delay)
         return self.model.invoke([message])
 
-    def get_description(self):
+    def get_description(self, image_path: str):
         """Invokes the model and retrieves the description of the fruit."""
-        image_data = self.load_image()
+        image_data = self.load_image(image_path)
         if image_data:
             message = self.create_message(image_data)
             response = self.invoke_model(message)
