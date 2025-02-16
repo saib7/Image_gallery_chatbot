@@ -4,6 +4,8 @@ import torch
 import numpy as np
 from embedings import CLIPEmbedding
 from chromadb import errors
+from description_ai import GeminiImageDescription
+from metadata_ai import ImageAnalyzer
 
 clip_embedding = CLIPEmbedding()
 
