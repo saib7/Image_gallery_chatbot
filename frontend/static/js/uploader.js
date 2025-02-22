@@ -4,6 +4,14 @@ const fileInput = document.getElementById('file-input');
 const uploadProgress = document.getElementById('upload-progress');
 const fileList = document.getElementById('file-list');
 const cancelUpload = document.getElementById('cancel-upload');
+const browseFilesBtn = document.getElementById('browse-files-btn');
+
+
+// Add event listener for the Browse Files button
+browseFilesBtn.addEventListener('click', (event) => {
+    event.stopPropagation(); // Prevent the event from bubbling up to the upload zone
+    fileInput.click();
+});
 
 // Prevent default drag behaviors
 ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
