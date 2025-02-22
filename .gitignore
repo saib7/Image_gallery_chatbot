@@ -43,6 +43,11 @@ dist/
 
 # Directory/Folders
 research_notebooks/
+backend/db
+frontend/static/images
+
+
+
 
 # .env file
 .env

@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MemoryBot - Upload Photos</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="/static/css/uploader.css">
+</head>
+<body class="bg-gray-50 text-gray-900">
+<!-- Navbar -->
+<nav class="fixed w-full z-50 bg-white shadow-md" id="navbar">
+    <div class="max-w-7xl mx-auto px-6 py-4">
+        <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-2">
+                <div class="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center">
+                    <span class="text-white text-xl font-bold">M</span>
+                </div>
+                <span class="text-2xl font-bold gradient-text">MemoryBot</span>
+            </div>
+            <ul class="hidden md:flex space-x-8">
+                <li><a href="/" class="nav-link text-gray-800 font-medium">Home</a></li> <!-- Home link -->
+                <li><a href="/gallery" class="nav-link text-gray-800 font-medium">Gallery</a></li> <!-- Gallery link -->
+                <li><a href="#" class="nav-link text-gray-800 font-medium">Upload</a></li>
+                <li><a href="#"
+                       class="bg-blue-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-blue-700 transition">Get
+                    Started</a></li>
+            </ul>
+            <!-- Mobile menu button -->
+            <button class="md:hidden text-gray-800">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M4 6h16M4 12h16M4 18h16"></path>
+                </svg>
+            </button>
+        </div>
+    </div>
+</nav>
+
+<!-- Upload Section -->
+<!-- Upload Section -->
+<section class="min-h-screen pt-32 pb-24">
+    <div class="max-w-4xl mx-auto px-6">
+        <div class="text-center mb-12">
+            <h1 class="text-4xl font-bold mb-6 gradient-text">Upload Your Photos</h1>
+            <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+                Drag and drop your photos or click to browse. Our AI will analyze and organize them automatically.
+            </p>
+        </div>
+
+        <!-- Upload Zone -->
+        <div id="upload-zone" class="upload-zone bg-white rounded-2xl p-12 text-center cursor-pointer relative">
+            <input type="file" id="file-input" name="file" multiple accept="image/*" class="hidden">
+
+            <!-- Upload Icon -->
+            <div class="mb-6">
+                <svg class="w-20 h-20 mx-auto text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+                </svg>
+            </div>
+
+            <h3 class="text-xl font-semibold mb-2">Drag & Drop your photos here</h3>
+            <p class="text-gray-500 mb-4">or</p>
+            <!-- The button now triggers file input selection -->
+            <button type="button"
+                    class="bg-blue-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-blue-700 transition"
+                    onclick="document.getElementById('file-input').click();">
+                Browse Files
+            </button>
+            <p class="text-sm text-gray-400 mt-4">Supported formats: JPG, PNG, HEIC</p>
+        </div>
+
+        <!-- Upload Progress Container -->
+        <div id="upload-progress" class="hidden mt-8">
+            <div class="bg-white rounded-2xl p-6 shadow-lg">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-semibold">Uploading Files</h3>
+                    <button id="cancel-upload" class="text-red-500 hover:text-red-600 transition">Cancel</button>
+                </div>
+
+                <!-- File List -->
+                <div id="file-list" class="space-y-4">
+                    <!-- File progress items will be added here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Success Message (Hidden by Default) -->
+        <div id="success-message" class="hidden mt-4 text-green-600 font-semibold text-lg text-center">
+            File uploaded successfully!
+        </div>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer class="bg-gray-900 text-white py-12">
+    <div class="max-w-7xl mx-auto px-6">
+        <div class="grid md:grid-cols-2 gap-8 items-center">
+            <div>
+                <div class="flex items-center space-x-2 mb-6">
+                    <div class="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center">
+                        <span class="text-white text-xl font-bold">M</span>
+                    </div>
+                    <span class="text-2xl font-bold text-white">MemoryBot</span>
+                </div>
+                <p class="text-gray-400 max-w-md">Transforming the way you interact with your photo memories through
+                    artificial intelligence.</p>
+            </div>
+            <div class="flex justify-end space-x-6">
+                <a href="#" class="text-gray-400 hover:text-white transition">Twitter</a>
+                <a href="#" class="text-gray-400 hover:text-white transition">LinkedIn</a>
+                <a href="#" class="text-gray-400 hover:text-white transition">Instagram</a>
+            </div>
+        </div>
+        <div class="border-t border-gray-800 mt-12 pt-8 text-center">
+            <p class="text-gray-400">© 2025 MemoryBot. All rights reserved.</p>
+        </div>
+    </div>
+</footer>
+
+
+<script src="/static/js/uploader.js"></script>
+</body>
+</html>

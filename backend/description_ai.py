@@ -6,12 +6,11 @@ import base64
 from dotenv import load_dotenv
 
 
-load_dotenv(dotenv_path="../.env")
-api_key = os.getenv("GEMINI_API_KEY")
-
 
 class GeminiImageDescription:
-    def __init__(self, model_name="gemini-2.0-flash-lite-preview-02-05", delay=2):
+    def __init__(self, api_key: str, model_name="gemini-2.0-flash",  delay=2):
+        load_dotenv(dotenv_path="../.env")
+        self.api_key = api_key
         self.model_name = model_name
         self.model = ChatGoogleGenerativeAI(model=self.model_name, api_key=api_key)
         self.delay = delay
@@ -31,19 +30,19 @@ class GeminiImageDescription:
         """Creates a HumanMessage with the encoded image."""
 
         text = """
-        Please provide a detailed and comprehensive description of the following image. Your response should include the following elements:
+        Describe the image in one paragraph, covering the following aspects:
 
-        Visual Elements: Describe the main objects, people, or subjects in the image, including their appearance, color, size, and position within the frame.
+        Visual Elements: Focus on the main subjects—people, objects, or key features—including their appearance, colors, sizes, and placement in the frame.
 
-        Setting/Environment: Describe the environment or background, including location, time of day, weather, and any notable details (such as buildings, nature, or interior design).
+        Setting/Environment: Note the location, time of day, weather, and any key background details (e.g., nature, architecture).
 
-        Action/Emotion: If there are any actions or interactions happening in the image, describe them. Also, include any emotions or moods that can be inferred from the people or objects in the image.
+        Action/Emotion: Describe any actions, interactions, or emotional undertones in the image.
 
-        Context/Story: If applicable, speculate on the context or story behind the image. What might be happening before or after this moment? How does the image make you feel, and why?
+        Context/Story: Speculate on the story or context, and explain how the image makes you feel and why.
 
-        Additional Details: Mention any other distinctive features like lighting, textures, or angles that stand out. Feel free to include symbolic interpretations or insights related to the image.
+        Additional Details: Highlight any notable lighting, textures, angles, or symbolic elements.
 
-        Be as descriptive and detailed as possible to provide a vivid understanding of the image. But write everything in one or two paragraph.
+        Be descriptive to offer a vivid picture while keeping it concise.
         """
 
         return HumanMessage(
@@ -55,6 +54,7 @@ class GeminiImageDescription:
                 },
             ],
         )
+
 
     def invoke_model(self, message):
         """Invoke the model with the message and return the response."""
@@ -71,4 +71,3 @@ class GeminiImageDescription:
             return response.content
         else:
             return "Failed to load the image."
-

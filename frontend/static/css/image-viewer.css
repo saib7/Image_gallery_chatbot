@@ -1,0 +1,44 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+body {
+    font-family: 'Inter', sans-serif;
+}
+
+.gradient-text {
+    background: linear-gradient(135deg, #2563eb, #7c3aed);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.tag {
+    position: relative;
+    z-index: 1; /* Make sure tags are on top */
+    transition: all 0.1s ease;
+    background-color: rgba(59, 130, 246, 0.3); /* Light blue with adjusted opacity */
+    color: rgba(59, 130, 246, 1); /* Full opacity for text */
+}
+
+.tag:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    background-color: rgba(59, 130, 246, 0.5); /* Darker background on hover */
+}
+
+.zoomable-image {
+    transition: transform 0.3s ease;
+}
+
+/*.zoomable-image:hover {*/
+/*    transform: scale(1.5); !* Zooms in the image *!*/
+/*    cursor: zoom-in; !* Changes cursor to indicate zooming *!*/
+/*}*/
+
+.zoomable-image {
+    transition: transform 0.3s ease;
+    cursor: zoom-in; /* Change cursor to indicate zoom-in on image */
+}
+
+.zoomed {
+    cursor: zoom-out; /* Change cursor to indicate zoom-out on image */
+}
+

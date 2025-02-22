@@ -4,31 +4,50 @@ from description_ai import GeminiImageDescription
 from metadata_ai import ImageAnalyzer
 from dotenv import load_dotenv
 import os
+from data_loader import ChromaDBClient, ChromaDBDataRetriever
 
 import warnings
 warnings.filterwarnings("ignore")
 
-db = ChromaDatabase(collection_name="image_embeddings2", persist_directory="./db")
+# db = ChromaDatabase(collection_name="image_embeddings2", persist_directory="./db")
 #
 # # Do some query
 # # Example of querying with text
-print(db.query_with_text(query_text="A Girl with flower"))
-print("\n\n")
-#
+# path, meta = db.query_with_text(query_text="A Girl with flower")
+# print(path)
+# print("\n\n")
+# print(meta)
+# print(db.query_with_text(query_text="A Girl with flower"))
+# print("\n\n")
+
 # print(db.query_with_image("flowerGirl.jpg"))
 # print("\n\n")
 #
 # print(db.query_with_text_and_image(query_text="A Girl with flower", query_image="flowerGirl.jpg"))
 
-# image_path = "flowerGirl.jpg"
-# image_description = GeminiImageDescription()
-# description = image_description.get_description(image_path)
-# print(description)
+db_client = ChromaDBClient(persist_directory="./db")
+data_retriever = ChromaDBDataRetriever(
+    client=db_client,
+    collection_name="image_embeddings2",
+    include_embeddings=True,
+    include_metadatas=True,
+    include_documents=True
+)
+
+# Fetch all data from the collection
+data = data_retriever.get_all_data()
+
+# data_dict = {"image_path": [], "metadata": []}
+print(data)
 
 
-# image_path = "flowerGirl.jpg"
-# load_dotenv(dotenv_path="../.env")
-# api_key = os.getenv("GEMINI_API_KEY")
-# analyzer = ImageAnalyzer(api_key=api_key)
-# metadata = analyzer.analyze_image(image_path=image_path, language="English")
-# print(metadata)
+
+
+
+# data['path'] = data['documents']
+
+# # Print the results
+# print("Fetched Data:")
+# for key, value in data.items():
+#     if key == 'metadatas':
+#         print(f"{key}: {value}")

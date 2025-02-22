@@ -1,25 +1,15 @@
 import chromadb
-
 import os
 import torch
 import numpy as np
 from dotenv import load_dotenv
 
-
 from embedings import CLIPEmbedding
 from chromadb import errors
 from description_ai import GeminiImageDescription
 from metadata_ai import ImageAnalyzer
-
+from pathlib import Path
 load_dotenv(dotenv_path="../.env")
-api_key = os.getenv("GEMINI_API_KEY")
-
-clip_embedding = CLIPEmbedding()
-description = GeminiImageDescription(delay=5)
-meta_data = ImageAnalyzer(api_key, delay=5)
-
-
-
 
 
 class ChromaDatabase:
@@ -32,6 +22,15 @@ class ChromaDatabase:
         self.collection_name = collection_name
         # self.collection = self._get_or_create_collection()
         self.collection = self.client.get_or_create_collection(self.collection_name)
+
+        # Initialize AI components with API key from environment
+        api_key = os.getenv("GEMINI_API_KEY")
+        if not api_key:
+            raise ValueError("GEMINI_API_KEY not found in environment variables.")
+
+        self.clip_embedding = CLIPEmbedding()
+        self.description = GeminiImageDescription(api_key, delay=5)
+        self.meta_data = ImageAnalyzer(api_key, delay=5)
 
 
     def _get_or_create_collection(self):
@@ -54,10 +53,9 @@ class ChromaDatabase:
     - image_path (str): Path to the image file.
     - collection (chromadb.Collection): The Chroma collection to store the image in.
     """
-        image_embedding = clip_embedding.embed_image(image_path)
+        image_embedding = self.clip_embedding.embed_image(image_path)
         image_name = os.path.basename(image_path)
         image_id = os.path.splitext(image_name)[0]
-
 
         # Check if the image ID already exists in the collection
         existing_docs = self.collection.get(ids=[image_id])
@@ -67,12 +65,12 @@ class ChromaDatabase:
             print(f"Image {image_name} already exists in the collection. Skipping...")
             return
 
-        image_description = description.get_description(image_path)
-        image_metadata = meta_data.analyze_image(image_path=image_path, language="English")
+        image_description = self.description.get_description(image_path)
+        image_metadata = self.meta_data.analyze_image(image_path=image_path, language="English")
 
         # Convert list fields to comma-separated strings
         chroma_compatible_metadata = {
-            "description": image_metadata["description"],
+            "image_path": Path(image_path).as_posix(),  # Add the full image path to metadata
             "detected_objects": ", ".join(image_metadata["detected_objects"]),
             "color_palette": ", ".join(image_metadata["color_palette"]),
             "potential_use_cases": ", ".join(image_metadata["potential_use_cases"]),
@@ -84,7 +82,7 @@ class ChromaDatabase:
             documents=[image_description],  # You can store any metadata, here we use the image name
             metadatas=[chroma_compatible_metadata],
             embeddings=[image_embedding],
-            ids=[image_path]  # Use the unique ID here
+            ids=[image_id]  # Use the unique ID here
         )
 
     def store_images_in_chroma(self, image_directory: str):
@@ -115,7 +113,6 @@ class ChromaDatabase:
             print(f"Collection {self.collection_name} does not exist.")
 
 
-
     def query_with_text(self, query_text=None, top_k=5):
         """
             Queries a database using a text input by generating an embedding for the text
@@ -129,11 +126,11 @@ class ChromaDatabase:
                 list: A list of the most relevant documents from the database based on the query.
             """
         # Process text query and generate text embedding using CLIP
-        text_embedding = clip_embedding.embed_text(query_text)
+        text_embedding = self.clip_embedding.embed_text(query_text)
 
         # Query the database based on text embedding
         results = self.collection.query(query_embeddings=text_embedding, n_results=top_k)
-        return results['ids']
+        return results['documents'], results['metadatas']
 
     def query_with_image(self, query_image=None, top_k=5):
         """
@@ -149,11 +146,11 @@ class ChromaDatabase:
             """
 
         # Generate image embedding for image query
-        image_embedding = clip_embedding.embed_image(query_image)
+        image_embedding = self.clip_embedding.embed_image(query_image)
 
         # Query the database based on image embedding
         results = self.collection.query(query_embeddings=image_embedding, n_results=top_k)
-        return results['ids']
+        return results['documents'], results['metadatas']
 
     def query_with_text_and_image(self, query_text=None, query_image=None, top_k=5):
 
@@ -166,15 +163,15 @@ class ChromaDatabase:
 
         # Process text query and generate text embedding using CLIP
 
-        text_embedding = clip_embedding.embed_text(query_text)
+        text_embedding = self.clip_embedding.embed_text(query_text)
         combined_embeddings.append(text_embedding)
 
         # Generate image embedding for image query
-        image_embedding = clip_embedding.embed_image(query_image)
+        image_embedding = self.clip_embedding.embed_image(query_image)
         combined_embeddings.append(image_embedding)
 
         combined_embeddings_mean = np.mean(combined_embeddings, axis=0)
 
         results = self.collection.query(query_embeddings=combined_embeddings_mean , n_results=top_k)
-        return results['ids']
+        return results['documents'], results['metadatas']
 

@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MemoryBot - Image Viewer</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Link to external CSS file -->
+    <link rel="stylesheet" href="/static/css/image-viewer.css"> <!-- This is the new link to the CSS file -->
+
+</head>
+<body class="bg-gray-50">
+<!-- Navbar -->
+<nav class="w-full bg-white shadow-sm">
+    <div class="max-w-7xl mx-auto px-6 py-4">
+        <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-2">
+                <div class="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center">
+                    <span class="text-white text-xl font-bold">M</span>
+                </div>
+                <span class="text-2xl font-bold gradient-text">MemoryBot</span>
+            </div>
+            <ul class="flex space-x-8">
+                <!--                <li><a href="#" class="text-gray-800 font-medium hover:text-blue-600 transition">Gallery</a></li>-->
+                <!--                <li><a href="#" class="text-gray-800 font-medium hover:text-blue-600 transition">Albums</a></li>-->
+                <!--                <li><a href="#" class="text-gray-800 font-medium hover:text-blue-600 transition">Search</a></li>-->
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- Main Content -->
+<main class="max-w-7xl mx-auto px-6 py-8">
+    <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+        <!-- Back Button -->
+        <div class="p-4 border-b">
+            <!-- Wrap the button in an <a> tag to make it a link to the gallery page -->
+            <a href="/gallery" class="flex items-center text-gray-600 hover:text-blue-600 transition">
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                </svg>
+                Back to Gallery
+            </a>
+        </div>
+
+        <div class="flex flex-col lg:flex-row">
+            <!-- Image Section -->
+            <div class="lg:w-3/4 p-6">
+                <div class="rounded-lg overflow-hidden shadow-lg">
+                    <!-- Updated the image source to use the dynamic image path passed from FastAPI -->
+                    <img id="zoomImage" src="{{ image_path }}" alt="Image Viewer" class="zoomable-image w-full h-auto"
+                         data-scale="1">
+                </div>
+
+                <!-- Description Section -->
+                <div class="mt-8">
+                    <h2 class="text-2xl font-semibold mb-4">Image Description</h2>
+                    <p class="text-gray-600 leading-relaxed">
+                        {{ description }}
+                    </p>
+                </div>
+            </div>
+
+            <!-- Metadata Section -->
+            <div class="lg:w-1/4 p-6 border-l">
+                <div class="space-y-6">
+                    <!-- Color Palette -->
+                    <div>
+                        <h3 class="text-lg font-semibold mb-2">Color Palette</h3>
+                        <div class="flex flex-wrap gap-2">
+                            <!-- Loop through the color_palette list and create color swatches -->
+                            {% for color in color_palette %}
+                            <span class="w-8 h-8 rounded-full" style="background-color: {{ color }};"
+                                  title="{{ color }}"></span>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <!-- Detected Objects -->
+                    <div>
+                        <h3 class="text-lg font-semibold mb-2">Detected Objects</h3>
+                        <div class="flex flex-wrap gap-2">
+                            <!-- Loop through the detected_objects list and display them as badges -->
+                            {% for object in detected_objects %}
+                            <span class="bg-gray-100 text-gray-600 px-4 py-1 rounded-full text-sm">{{ object }}</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <!-- Tags -->
+                    <div>
+                        <h3 class="text-lg font-semibold mb-3">Tags</h3>
+                        <div class="flex flex-wrap gap-2">
+
+                            <!-- Check if tags exist and are non-empty -->
+                            {% if tags %}
+                            <!-- Display only the first 5 tags if there are more than 5 -->
+                            {% for tag in tags[:5] %}
+                            <span class="tag bg-blue-100 text-blue-600 px-3 py-1 rounded-full text-sm">{{ tag }}</span>
+                            {% endfor %}
+
+                            <!-- Show a "More" text if there are more than 5 tags -->
+                            <!--                            {% if tags|length > 5 %}-->
+                            <!--                            <span class="tag bg-gray-100 text-gray-600 px-3 py-1 rounded-full text-sm">... More</span>-->
+                            <!--                            {% endif %}-->
+                            {% else %}
+                            <!-- Display a fallback message if there are no tags -->
+                            <span class="tag bg-gray-100 text-gray-600 px-3 py-1 rounded-full text-sm">No tags available</span>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="space-y-3">
+                        <!-- Wrap the button inside an anchor tag with the download attribute -->
+                        <a href="{{ image_path }}" download="{{ image_path.split('/')[-1] }}"
+                           class="w-full bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition flex items-center justify-center">
+                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                      d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                            </svg>
+                            Download Image
+                        </a>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script src="/static/js/image-viewer.js"></script>
+</body>
+</html>
